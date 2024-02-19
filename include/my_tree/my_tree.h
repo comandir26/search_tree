@@ -5,11 +5,18 @@
 
 namespace my_tree {
 	template<class T>
-	class MyTree {
+	struct Tree {
+		T _data;
+		Tree *_left, *_right;
+		Tree(T data) : _data(data), _left(nullptr), _right(nullptr) {}
+	};
+
+	template<class T>
+	class MySet {
 	public:
-		MyTree() : _data(nullptr), _size(0) {}
+		MySet() : _root(nullptr), _size(0) {}
 		
-		MyTree(std::initializer_list<T> list) : _size(list.size()) {
+		/*MySet(std::initializer_list<T> list) : _size(list.size()) {
 			_data = new T[_size]();
 			auto list_data = list.begin();
 			for (T* p = _data; p < _data + _size; ++p)
@@ -49,64 +56,128 @@ namespace my_tree {
 				throw std::out_of_range("MyTree::operator[] const, index is out of range");
 			}
 			return _data[index];
-		}
+		}*/
 		
 		bool insert(T key) {
-			if (contains(key)) return false;
-
-			if (_size == 0) {
-				_data = new T(key);
+			if (!_root) {
+				_root = new Tree<T>(key);
 				++_size;
 				return true;
 			}
-
-			T* new_data = new T[_size + 1];
-			int high = _size;
-			int low = 0;
-			while (low < high) {
-				int mid = (high + low) / 2;
-				if (key < _data[mid]) high = mid;
-				else low = mid + 1;
+			if (contains(key)) return false;
+			Tree<T>* node = _root;
+			bool left = false;
+			while (node) {
+				if (key < node->_data){
+					if (node->_left != nullptr) {
+						node = node->_left;
+						continue;
+					}
+					left = true;
+					break;
+				}
+				else if (key > node->_data) {
+					if (node->_right != nullptr) {
+						node = node->_right;
+						continue;
+					}
+					break;
+				}
 			}
-			new_data[high] = key;
-			int j = 0;
-			for (size_t i = 0; i < _size + 1; i++)
-			{
-				if (i == high) continue;
-				new_data[i] = _data[j];
-				++j;
-			}
-			delete[] _data;
-			_data = new_data;
-			++_size;
+			if (left) node->_left = new Tree<T>(key);
+			else node->_right = new Tree<T>(key);
 			return true;
 		}
 
 		bool contains(T key) {
-			int high = _size;
-			int low = 0;
-			while (low < high) {
+			return find(_root, key);
+		}
+
+		Tree<T>* find(Tree<T>* node, T key) {
+			if (node) {
+				if (key == node->_data) return node;
+				else if (key < node->_data) return find(node->_left, key);
+				else return find(node->_right, key);
+			}
+			return nullptr;
+		}
+
+		bool erase(T key) {
+			if (!contains(key)) return false;
+			Tree<T>* del = find(_root, key);
+			if (del->_left == nullptr && del->_right == nullptr) {
+				delete del;
+				del = nullptr;
+			}
+			else {
+				Tree<T>* max_left = max_leftf(del->_left);
+				if (max_left) {				
+					del->_data = max_left->_right->_data;
+					if (max_left->_right->_left == nullptr) {
+						delete max_left -> _right;
+						max_left -> _right= nullptr;
+					}
+					else {
+						max_left->_right->_data = max_left->_right->_left->_data;
+						delete max_left->_right->_left;
+						max_left->_right->_left = nullptr;
+					}
+					return true;
+				}
+				Tree<T>* min_right = min_rightf(del->_right);
+				if (min_right) {
+					del->_data = min_right->_data;
+					if (min_right->_right == nullptr) {
+						//delete min_right;
+						min_right = nullptr;
+					}
+					else {
+						min_right->_data = min_right->_right->_data;
+						//delete min_right->_right;
+						min_right->_right = nullptr;
+					}
+					return true;
+				}
+			}
+		}
+
+		void print(){
+			subprint(_root);
+			std::cout << std::endl;
+		}
+
+		void subprint(Tree<T>* node) {
+			if (node!= nullptr) {
+				subprint(node->_left);
+				std::cout << node->_data << ' ';
+				subprint(node->_right);
+			}
+			return;
+		}
+
+		/*void print() {
+			if (!_size) return;
+			subprint(0, _size, 0);
+		}
+		void subprint(int low, int high, int tabs) {
+			tabs += 5;
+			while (low < high - 1) {
 				int mid = (high + low) / 2;
-				if (key == _data[mid]) return true;
-				else if (key < _data[mid]) {
-					high = mid;// high = mid + 1;
-				}
-				else if (key > _data[mid]) {
-					low = mid + 1;
-				}
-			}
-			return false;
-		}
 
-		void print() const{
-			for (T* p = _data; p < _data + _size; ++p)
-			{
-				std::cout << *p << ' ';
-			}
-			std::cout << '\n';
-		}
+				subprint(mid, high, tabs);
+				
+				for (int i = 0; i < tabs; i++) std::cout << " ";
+				std::cout << _data[low] << std::endl;//??? mid or high?
 
-		size_t get_size() const{
+				//subprint(0, mid, tabs);
+
+				tabs -= 5;
+				if (tabs == 5) break;
+			}
+			return;
+		}*/
+
+		/*size_t get_size() const{
 			return _size;
 		}
 
@@ -120,15 +191,33 @@ namespace my_tree {
 
 		const T* get_data() const{
 			return _data;
-		}
+		}	
 
 		~MyTree() {
 			delete[] _data;
 			_size = 0;
-		}
+		}*/
 
 	private:
-		T* _data;
+		Tree<T>* _root;
 		size_t _size;
 	};
+
+	template<class T>
+	Tree<T>*& max_leftf(Tree<T>* node) {
+		if (!node) return node;
+		while (node->_right != nullptr && node->_right->_right != nullptr) {
+			node = node->_right;
+		}
+		return node;
+	}
+
+	template<class T>
+	Tree<T>*& min_rightf(Tree<T>* node) {
+		if (!node) return node;
+		while (node->_left != nullptr && node->_left->_left != nullptr) {
+			node = node->_left;
+		}
+		return node;
+	}
 }
