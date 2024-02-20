@@ -1,5 +1,4 @@
 #pragma once
-#include <initializer_list>
 #include <iostream>
 #include <utility>
 
@@ -15,48 +14,6 @@ namespace my_tree {
 	class MySet {
 	public:
 		MySet() : _root(nullptr), _size(0) {}
-		
-		/*MySet(std::initializer_list<T> list) : _size(list.size()) {
-			_data = new T[_size]();
-			auto list_data = list.begin();
-			for (T* p = _data; p < _data + _size; ++p)
-			{
-				*p = *list_data;
-				++list_data;
-			}
-		}
-
-		MyTree(const MyTree& rhs) : _size(rhs.get_size()), _data(new T[rhs.get_size()]) {
-			for (size_t i = 0; i < _size; i++)
-			{
-				_data[i] = rhs[i];
-			}
-		}
-
-		MyTree& operator=(const MyTree& rhs) {
-			MyTree copy(rhs);
-			swap(copy);
-			return *this;
-		}
-
-		void swap(MyTree& rhs) noexcept {
-			std::swap(_data, rhs.get_data());
-			std::swap(_size, rhs.get_size());
-		}
-
-		T& operator[](int index) {
-			if (index < 0 || index >= _size) {
-				throw std::out_of_range("MyTree::operator[], index is out of range");
-			}
-			return _data[index];
-		}
-
-		const T& operator[](int index) const {
-			if (index < 0 || index >= _size) {
-				throw std::out_of_range("MyTree::operator[] const, index is out of range");
-			}
-			return _data[index];
-		}*/
 		
 		bool insert(T key) {
 			if (!_root) {
@@ -90,55 +47,49 @@ namespace my_tree {
 		}
 
 		bool contains(T key) {
-			return find(_root, key);
+			Tree<T>* node = _root;
+			while (node) {
+				if (key < node->_data) node = node->_left;
+				else if (key > node->_data) node = node->_right;
+				else return true;
+			}
+			return false;
 		}
 
-		Tree<T>* find(Tree<T>* node, T key) {
+		/*Tree<T>* find(Tree<T>* node, T key) {
 			if (node) {
 				if (key == node->_data) return node;
 				else if (key < node->_data) return find(node->_left, key);
 				else return find(node->_right, key);
 			}
 			return nullptr;
+		}*/
+
+		void erase(T key) {
+			_root = erase_node(_root, key);
 		}
 
-		bool erase(T key) {
-			if (!contains(key)) return false;
-			Tree<T>* del = find(_root, key);
-			if (del->_left == nullptr && del->_right == nullptr) {
-				delete del;
-				del = nullptr;
-			}
+		Tree<T>* erase_node(Tree<T>* node, T key) {
+			if (node == nullptr) return node;
+			if (key < node->_data) node->_left = erase_node(node->_left, key);
+			else if (key > node->_data) node->_right = erase_node(node->_right, key);
+
 			else {
-				Tree<T>* max_left = max_leftf(del->_left);
-				if (max_left) {				
-					del->_data = max_left->_right->_data;
-					if (max_left->_right->_left == nullptr) {
-						delete max_left -> _right;
-						max_left -> _right= nullptr;
-					}
-					else {
-						max_left->_right->_data = max_left->_right->_left->_data;
-						delete max_left->_right->_left;
-						max_left->_right->_left = nullptr;
-					}
-					return true;
+				if (node->_left == nullptr) {
+					Tree<T>* temp = node->_right;
+					delete node;
+					return temp;
 				}
-				Tree<T>* min_right = min_rightf(del->_right);
-				if (min_right) {
-					del->_data = min_right->_data;
-					if (min_right->_right == nullptr) {
-						//delete min_right;
-						min_right = nullptr;
-					}
-					else {
-						min_right->_data = min_right->_right->_data;
-						//delete min_right->_right;
-						min_right->_right = nullptr;
-					}
-					return true;
+				else if (node->_right == nullptr) {
+					Tree<T>* temp = node->_left;
+					delete node;
+					return temp;
 				}
+				Tree<T>* temp = max_left(node->_left);//Самый правый узел левого поддерева
+				node->_data = temp->_data;
+				node->_left = erase_node(node->_left, temp->_data);
 			}
+			return node;
 		}
 
 		void print(){
@@ -154,28 +105,6 @@ namespace my_tree {
 			}
 			return;
 		}
-
-		/*void print() {
-			if (!_size) return;
-			subprint(0, _size, 0);
-		}
-		void subprint(int low, int high, int tabs) {
-			tabs += 5;
-			while (low < high - 1) {
-				int mid = (high + low) / 2;
-
-				subprint(mid, high, tabs);
-				
-				for (int i = 0; i < tabs; i++) std::cout << " ";
-				std::cout << _data[low] << std::endl;//??? mid or high?
-
-				//subprint(0, mid, tabs);
-
-				tabs -= 5;
-				if (tabs == 5) break;
-			}
-			return;
-		}*/
 
 		/*size_t get_size() const{
 			return _size;
@@ -204,19 +133,9 @@ namespace my_tree {
 	};
 
 	template<class T>
-	Tree<T>*& max_leftf(Tree<T>* node) {
-		if (!node) return node;
-		while (node->_right != nullptr && node->_right->_right != nullptr) {
+	Tree<T>* max_left(Tree<T>* node) {
+		while (node->_right != nullptr) {
 			node = node->_right;
-		}
-		return node;
-	}
-
-	template<class T>
-	Tree<T>*& min_rightf(Tree<T>* node) {
-		if (!node) return node;
-		while (node->_left != nullptr && node->_left->_left != nullptr) {
-			node = node->_left;
 		}
 		return node;
 	}

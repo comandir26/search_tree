@@ -20,16 +20,26 @@ TEST(Creating, First) {
 	tree.print();
 	tree.erase(50);
 	tree.print();
+	tree.erase(20);
+	tree.print();
+	tree.erase(9);
+	tree.print();
 }
 
-/*
-TEST(Adresses, First) {
-	Tree<int>* root = new Tree<int>(10);
-	auto max_left = new Tree<int>(5);
-	root->_right = max_left;
-	delete max_left;
-	std::cout << root->_right;
-}*/
+TEST(Contains, First) {
+	MySet<int> tree;
+	tree.insert(30);
+	tree.insert(20);
+	tree.insert(50);
+	tree.insert(14);
+	tree.insert(45);
+	cout << tree.contains(30);
+	cout << tree.contains(50);
+	cout << tree.contains(14);
+	cout << tree.contains(20);
+	cout << tree.contains(45);
+	cout << tree.contains(1);
+}
 
 /*TEST(Contains, First) {
 	MyTree<int> tree;
