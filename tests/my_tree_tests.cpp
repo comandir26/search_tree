@@ -39,25 +39,11 @@ TEST(Contains, First) {
 	cout << tree.contains(20);
 	cout << tree.contains(45);
 	cout << tree.contains(1);
-}
-
-/*TEST(Contains, First) {
-	MyTree<int> tree;
-	tree.insert(5);
-	tree.insert(7);
-	tree.insert(1);
-	tree.insert(4);
-	tree.insert(9);
-	cout << tree.contains(1) << '\n';
-	cout << tree.contains(4) << '\n';
-	cout << tree.contains(5) << '\n';
-	cout << tree.contains(10) << '\n';
-	cout << tree.contains(7) << '\n';
-	cout << tree.contains(9) << '\n';
+	cout << '\n';
 }
 
 TEST(CopyC, First) {
-	MyTree<int> tree;
+	MySet<int> tree;
 	tree.insert(5);
 	tree.insert(7);
 	tree.insert(1);
@@ -65,13 +51,13 @@ TEST(CopyC, First) {
 	tree.insert(9);
 	cout << "Tree:" << "\n";
 	tree.print();
-	MyTree<int> tree2(tree);
+	MySet<int> tree2(tree);
 	cout << "Copy of Tree:" << "\n";
 	tree2.print();
 }
 
 TEST(Assign, First) {
-	MyTree<int> tree;
+	MySet<int> tree;
 	tree.insert(5);
 	tree.insert(7);
 	tree.insert(1);
@@ -80,7 +66,7 @@ TEST(Assign, First) {
 	cout << "Tree:" << "\n";
 	tree.print();
 
-	MyTree<int> tree2;
+	MySet<int> tree2;
 	tree2.insert(6);
 	tree2.insert(1);
 	tree2.insert(3);
@@ -91,4 +77,4 @@ TEST(Assign, First) {
 
 	cout << "Second Tree after assignment:" << "\n";
 	tree2.print();
-}*/
+}

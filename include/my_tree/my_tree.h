@@ -13,12 +13,21 @@ namespace my_tree {
 	template<class T>
 	class MySet {
 	public:
-		MySet() : _root(nullptr), _size(0) {}
+		MySet() : _root(nullptr) {}
+
+		MySet(const MySet& rhs): _root(nullptr){
+			copy_data(rhs.get_root());
+		}
+
+		MySet& operator=(const MySet& rhs){
+			MySet copy(rhs);
+			swap(copy);
+			return *this;
+		}
 		
 		bool insert(T key) {
 			if (!_root) {
 				_root = new Tree<T>(key);
-				++_size;
 				return true;
 			}
 			if (contains(key)) return false;
@@ -56,24 +65,38 @@ namespace my_tree {
 			return false;
 		}
 
-		/*Tree<T>* find(Tree<T>* node, T key) {
-			if (node) {
-				if (key == node->_data) return node;
-				else if (key < node->_data) return find(node->_left, key);
-				else return find(node->_right, key);
-			}
-			return nullptr;
-		}*/
-
 		void erase(T key) {
 			_root = erase_node(_root, key);
+		}
+
+		void print(){
+			subprint(_root);
+			std::cout << std::endl;
+		}
+
+		~MySet() {
+			delete_node(_root);
+		}
+
+	private:
+		Tree<T>* _root;
+
+		void copy_data(Tree<T>* node) {
+			if (node != nullptr) {
+				this->insert(node->_data);
+				copy_data(node->_left);
+				copy_data(node->_right);
+			}
+		}
+
+		void swap(MySet& rhs) noexcept {
+			std::swap(_root, rhs.get_root());
 		}
 
 		Tree<T>* erase_node(Tree<T>* node, T key) {
 			if (node == nullptr) return node;
 			if (key < node->_data) node->_left = erase_node(node->_left, key);
 			else if (key > node->_data) node->_right = erase_node(node->_right, key);
-
 			else {
 				if (node->_left == nullptr) {
 					Tree<T>* temp = node->_right;
@@ -92,13 +115,8 @@ namespace my_tree {
 			return node;
 		}
 
-		void print(){
-			subprint(_root);
-			std::cout << std::endl;
-		}
-
 		void subprint(Tree<T>* node) {
-			if (node!= nullptr) {
+			if (node != nullptr) {
 				subprint(node->_left);
 				std::cout << node->_data << ' ';
 				subprint(node->_right);
@@ -106,30 +124,21 @@ namespace my_tree {
 			return;
 		}
 
-		/*size_t get_size() const{
-			return _size;
+		void delete_node(Tree<T>* node) {
+			if (node != nullptr) {
+				delete_node(node->_left);
+				delete_node(node->_right);
+				delete node;
+			}
 		}
 
-		size_t& get_size(){
-			return _size;
+		Tree<T>*& get_root() {
+			return _root;
 		}
 
-		T*& get_data() {
-			return _data;
+		Tree<T>* get_root() const {
+			return _root;
 		}
-
-		const T* get_data() const{
-			return _data;
-		}	
-
-		~MyTree() {
-			delete[] _data;
-			_size = 0;
-		}*/
-
-	private:
-		Tree<T>* _root;
-		size_t _size;
 	};
 
 	template<class T>
