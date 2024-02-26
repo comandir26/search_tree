@@ -74,6 +74,14 @@ namespace my_tree {
 			std::cout << std::endl;
 		}
 
+		Tree<T>*& get_root() {
+			return _root;
+		}
+
+		Tree<T>* get_root() const {
+			return _root;
+		}
+
 		~MySet() {
 			delete_node(_root);
 		}
@@ -131,14 +139,6 @@ namespace my_tree {
 				delete node;
 			}
 		}
-
-		Tree<T>*& get_root() {
-			return _root;
-		}
-
-		Tree<T>* get_root() const {
-			return _root;
-		}
 	};
 
 	template<class T>
@@ -147,5 +147,27 @@ namespace my_tree {
 			node = node->_right;
 		}
 		return node;
+	}
+
+	template<class T>
+	MySet<T> intersection(MySet<T>& lhs, MySet<T>& rhs) {
+		MySet<T> dif = difference(lhs, rhs);
+		return difference(lhs, dif);
+	}
+
+	template<class T>
+	MySet<T> difference(MySet<T>& lhs, MySet<T>& rhs) {
+		MySet dif(lhs);
+		delete_same(dif, rhs.get_root());
+		return dif;
+	}
+
+	template<class T>
+	void delete_same(MySet<T>& tree, Tree<T>* node){
+		if (node) {
+			delete_same(tree, node->_left);
+			if(tree.contains(node->_data)) tree.erase(node->_data);
+			delete_same(tree, node->_right);
+		}
 	}
 }

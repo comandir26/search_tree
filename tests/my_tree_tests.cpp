@@ -78,3 +78,33 @@ TEST(Assign, First) {
 	cout << "Second Tree after assignment:" << "\n";
 	tree2.print();
 }
+
+TEST(Difference, First) {
+	MySet<int> tree;
+	tree.insert(5);
+	tree.insert(7);
+	tree.insert(1);
+	tree.insert(4);
+	tree.insert(9);
+	tree.insert(6);
+	tree.insert(2);
+	cout << "Tree:" << "\n";
+	tree.print();
+
+	MySet<int> tree2;
+	tree2.insert(6);
+	tree2.insert(5);
+	tree2.insert(9);
+	tree2.insert(2);
+	tree2.insert(3);
+	cout << "Second Tree:" << "\n";
+	tree2.print();
+
+	MySet<int> dif = difference(tree, tree2);
+	cout << "Difference:" << "\n";
+	dif.print();
+
+	MySet<int> inter = intersection(tree, tree2);
+	cout << "Intersection:" << "\n";
+	inter.print();
+}
