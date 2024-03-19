@@ -28,5 +28,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Объявляем тесты
+add_executable(experiments "tests/experiments.cpp")
+target_link_libraries(experiments my_tree)
 add_executable(my_tree_tests "tests/my_tree_tests.cpp")
 target_link_libraries(my_tree_tests my_tree GTest::gtest_main)
