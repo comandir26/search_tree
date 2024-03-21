@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <utility>
+#include <complex>
 
 namespace my_tree {
 	template<class T>
@@ -65,8 +66,10 @@ namespace my_tree {
 			return false;
 		}
 
-		void erase(T key) {
-			_root = erase_node(_root, key);
+		bool erase(T key) {
+			bool deleted = false;
+			_root = erase_node(_root, key, deleted);
+			return deleted;
 		}
 
 		void print(){
@@ -101,24 +104,26 @@ namespace my_tree {
 			std::swap(_root, rhs.get_root());
 		}
 
-		Tree<T>* erase_node(Tree<T>* node, T key) {
+		Tree<T>* erase_node(Tree<T>* node, T key, bool& deleted) {
 			if (node == nullptr) return node;
-			if (key < node->_data) node->_left = erase_node(node->_left, key);
-			else if (key > node->_data) node->_right = erase_node(node->_right, key);
+			if (key < node->_data) node->_left = erase_node(node->_left, key, deleted);
+			else if (key > node->_data) node->_right = erase_node(node->_right, key, deleted);
 			else {
 				if (node->_left == nullptr) {
 					Tree<T>* temp = node->_right;
 					delete node;
+					deleted = true;
 					return temp;
 				}
 				else if (node->_right == nullptr) {
 					Tree<T>* temp = node->_left;
 					delete node;
+					deleted = true;
 					return temp;
 				}
 				Tree<T>* temp = max_left(node->_left);//Самый правый узел левого поддерева
 				node->_data = temp->_data;
-				node->_left = erase_node(node->_left, temp->_data);
+				node->_left = erase_node(node->_left, temp->_data, deleted);
 			}
 			return node;
 		}
@@ -170,4 +175,7 @@ namespace my_tree {
 			delete_same(tree, node->_right);
 		}
 	}
+
+	template<class T>
+	bool operator<(std::complex<T> lhs, std::complex<T> rhs)
 }

@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
 #include "my_tree/my_tree.h"
+#include <complex>
 
 using namespace my_tree;
-using std::cout;
-
+using std::cout, std::complex;
 
 TEST(Creating, First) {
 	MySet<int> tree;
@@ -21,8 +21,6 @@ TEST(Creating, First) {
 	tree.erase(50);
 	tree.print();
 	tree.erase(20);
-	tree.print();
-	tree.erase(9);
 	tree.print();
 }
 
@@ -79,7 +77,7 @@ TEST(Assign, First) {
 	tree2.print();
 }
 
-TEST(Difference, First) {
+TEST(Diff_Inter, First) {
 	MySet<int> tree;
 	tree.insert(5);
 	tree.insert(7);
@@ -107,4 +105,10 @@ TEST(Difference, First) {
 	MySet<int> inter = intersection(tree, tree2);
 	cout << "Intersection:" << "\n";
 	inter.print();
+}
+
+TEST(Creating, Second) {
+	MySet<complex<float>> data;
+	data.insert(complex<float>(1.0, 2.0));
+	data.insert(complex<float>(1.0, 2.0));
 }

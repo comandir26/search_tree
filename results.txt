@@ -1,0 +1,31 @@
+SET Average(100) filling time with 1000 items: 0.000440755
+SET Average(100) filling time with 10000 items: 0.00716319
+SET Average(100) filling time with 100000 items: 0.0900592
+
+VECTOR Average(100) filling time with 1000 items: 0.000209095
+VECTOR Average(100) filling time with 10000 items: 0.00233492
+VECTOR Average(100) filling time with 100000 items: 0.0198514
+
+SET Average(1000) finding time in 1000 items: 2.852e-07
+SET Average(1000) finding time in 10000 items: 4.396e-07
+SET Average(1000) finding time in 100000 items: 1.363e-06
+
+VECTOR Average(1000) finding time in 1000 items: 7.0461e-06
+VECTOR Average(1000) finding time in 10000 items: 2.56429e-05
+VECTOR Average(1000) finding time in 100000 items: 0.000268111
+
+SET Average(1000) erasing time in 1000 items: 3.109e-07
+SET Average(1000) erasing time in 10000 items: 5.121e-07
+SET Average(1000) erasing time in 100000 items: 1.0282e-06
+
+VECTOR Average(1000) erasing time in 1000 items: 5.1601e-06
+VECTOR Average(1000) erasing time in 10000 items: 6.14657e-05
+VECTOR Average(1000) erasing time in 100000 items: 0.00076961
+
+SET Average(1000) insertion time in 1000 items: 5.582e-07
+SET Average(1000) insertion time in 10000 items: 6.893e-07
+SET Average(1000) insertion time in 100000 items: 1.7655e-06
+
+VECTOR Average(1000) insertion time in 1000 items: 1.272e-07
+VECTOR Average(1000) insertion time in 10000 items: 1.166e-07
+VECTOR Average(1000) insertion time in 100000 items: 1.145e-07
